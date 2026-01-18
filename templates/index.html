@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOUNDWAVE</title>
+    <style>
+        :root {
+            --bg-black: #000000;
+            --neon-red: #ff003c;
+            --neon-purple: #bc13fe;
+            --neon-red-glow: 0 0 15px #ff003c;
+            --neon-purple-glow: 0 0 15px #bc13fe;
+            --font-main: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: white;
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 1rem;
+        }
+
+        /* HEADER SECTION */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 10%;
+            padding: 0 1rem;
+            border-bottom: 1px solid #333;
+            margin-bottom: 1rem;
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot { color: var(--neon-red); animation: pulse 2s infinite; }
+        .status-text { text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
+
+        .stats-right {
+            display: flex;
+            gap: 15px;
+            color: var(--neon-purple);
+            font-size: 0.8rem;
+        }
+
+        .stats-right span:hover, #fs-btn:focus {
+            color: var(--neon-red);
+            cursor: pointer;
+        }
+
+        /* GRID LAYOUT */
+        .deck-container {
+            display: grid;
+            grid-template-columns: 2fr 3fr; /* 6 buttons left, 9 buttons right */
+            gap: 40px;
+            flex-grow: 1;
+            align-items: center;
+        }
+
+        .section {
+            display: grid;
+            gap: 30px;
+            height: 100%;
+        }
+
+        /* 2x3 Grid for Commands */
+        .commands-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+        }
+
+        /* 3x3 Grid for Media */
+        .media-grid {
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+        }
+
+        /* BUTTON STYLES */
+        .btn {
+            background: #050505;
+            border: 2px solid transparent;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+        }
+
+        .btn svg {
+            width: 40%;
+            height: 40%;
+            transition: stroke 0.2s;
+        }
+
+        /* Left Side: Command Accents */
+        .commands-grid .btn { border-color: var(--neon-purple); stroke: var(--neon-purple); }
+        .commands-grid .btn:hover, .commands-grid .btn:focus {
+            border-color: var(--neon-red);
+            stroke: var(--neon-red);
+            box-shadow: var(--neon-red-glow);
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        /* Right Side: Media Accents */
+        .media-grid .btn { border-color: var(--neon-red); stroke: var(--neon-red); }
+        .media-grid .btn:hover, .media-grid .btn:focus {
+            border-color: var(--neon-purple);
+            stroke: var(--neon-purple);
+            box-shadow: var(--neon-purple-glow);
+            transform: scale(1.1);
+            z-index: 10;
+        }
+
+        /* RESPONSIVE LOGIC */
+        @media (max-width: 768px) {
+            .deck-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 3fr 2fr; /* Media Top, Commands Bottom */
+                gap: 20px;
+            }
+            .media-grid { order: 1; }
+            .commands-grid { order: 2; }
+            
+            header { font-size: 0.6rem; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="status-left">
+            <span class="status-dot">●</span>
+            <span class="status-text">DISCONNECTED</span>
+        </div>
+        <div class="stats-right">
+            <span>CPU: 24%</span>
+            <span>RAM: 4.2GB</span>
+            <span>TEMP: 54°C</span>
+            <span id="fs-btn" onclick="toggleFullScreen()">[FS]</span>
+        </div>
+    </header>
+
+    <div class="deck-container">
+        <div class="section commands-grid">
+            <button onclick="sendCmd('c', 'l')" class="btn" title="Lock"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></button>
+            <button onclick="sendCmd('c', 'd')" class="btn" title="Display"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg></button>
+            <button onclick="sendCmd('c', 's')" class="btn" title="Shutdown"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg></button>
+            <button onclick="sendCmd('c', 'c')" class="btn" title="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+            <button onclick="sendCmd('c', 'r')" class="btn" title="Reboot"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
+            <button onclick="sendCmd('c', 'b')" class="btn" title="Break"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg></button>
+        </div>
+
+        <div class="section media-grid">
+            <button onclick="sendCmd('m', 'tr')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></button>
+            <button onclick="sendCmd('m', 'vu')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></button>
+            <button onclick="sendCmd('m', 'vm')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg></button>
+            <button onclick="sendCmd('m', 'pt')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+            <button onclick="sendCmd('m', 'pp')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg></button>
+            <button onclick="sendCmd('m', 'nt')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+            <button onclick="sendCmd('m', 'rt')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 17l-5-5 5-5"></path><path d="M18 17l-5-5 5-5"></path></svg></button>
+            <button onclick="sendCmd('m', 'vd')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path></svg></button>
+            <button onclick="sendCmd('m', 'st')" class="btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M13 17l5-5-5-5"></path><path d="M6 17l5-5-5-5"></path></svg></button>
+        </div>
+    </div>
+
+    <script>
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+    <script>
+        function sendCmd(type, value) {
+            fetch(`/${type}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ value })
+            });
+        }
+    </script>
+
+</body>
+</html>
