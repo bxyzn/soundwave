@@ -1,0 +1,5 @@
+SERVER_IP = '192.168.29.51'
+SERVER_PORT = 6900
+SERVER_ADDRESS = (SERVER_IP, SERVER_PORT)
+FORMAT = 'utf-8'
+WDIR = "/home/ezra/scripts/soundwave"
